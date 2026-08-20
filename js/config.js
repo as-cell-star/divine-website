@@ -14,7 +14,7 @@ window.DIVINE_CONFIG = {
      4. Done. Form submissions arrive in that inbox.
      Free tier: 250 submissions/month.                            */
 
-  WEB3FORMS_KEY: '',   /* <-- PASTE YOUR ACCESS KEY HERE */
+  WEB3FORMS_KEY: '',   /* 90932bcb-75f7-43a9-b016-a3aafb8f5854 */
 
 
   /* ── OPTION B — Your own backend (SMS + email) ────────────────
