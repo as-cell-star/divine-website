@@ -1,0 +1,23 @@
+{
+  "name": "Divine Birth Midwifery Centre",
+  "short_name": "Divine Birth",
+  "description": "Guiding You Through Your Birth Journey. Expert midwifery care in Kahawa Wendani, Nairobi.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf6f2",
+  "theme_color": "#4e3433",
+  "icons": [
+    {
+      "src": "assets/favicon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

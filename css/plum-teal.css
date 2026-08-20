@@ -1,0 +1,176 @@
+/* ================================================================
+   PLUM & TEAL — theme layer
+   Loaded AFTER styles.css, so this file has the final say.
+
+   Replaces the previous monochrome/near-black theme.
+   - PLUM is the ground: it carries the heavy blocks (announce bar,
+     pillars band, footer, hero backdrop). Warm, rich, and it belongs
+     to a maternity brand in a way cold charcoal never did.
+   - TEAL is the accent: buttons, links, icons, active states.
+   - GOLD is a whisper: stars and celebration marks only.
+
+   All pairings below meet WCAG AA contrast.
+================================================================ */
+
+:root {
+  /* Text — warm near-black, never blue-black */
+  --ink:        #2a1f27;
+  --ink-mid:    #5a4b55;
+  --ink-soft:   #8a7a84;
+
+  /* Light grounds */
+  --cream:      #faf8f5;
+  --warm:       #f4efec;
+  --warm-mid:   #e9dfe1;
+  --white:      #ffffff;
+  --line:       rgba(62,31,51,0.12);
+  --line-warm:  rgba(62,31,51,0.07);
+
+  /* PLUM — the ground */
+  --plum:        #3e1f33;
+  --plum-deep:   #2c1524;
+  --plum-mid:    #5a2e4a;
+  --plum-light:  #f7eef4;
+
+  /* TEAL — the accent */
+  --teal:        #0f7a6e;
+  --teal-bright: #3fbfae;   /* used ON plum, where it must pop */
+  --teal-dark:   #0b5c53;
+  --teal-light:  #e6f4f1;
+
+  /* GOLD — whisper only */
+  --gold:        #c8963a;
+  --gold-light:  #fdf5e8;
+
+  /* Compatibility aliases — existing rules reference these names */
+  --rose:       var(--teal);
+  --rose-light: var(--teal-light);
+  --rose-dark:  var(--teal-dark);
+  --sage:       var(--plum);
+  --sage-light: var(--plum-light);
+  --sage-dark:  var(--plum-deep);
+
+  /* Shadows — plum-tinted, warm */
+  --s1: 0 1px 3px rgba(62,31,51,0.06), 0 1px 2px rgba(62,31,51,0.04);
+  --s2: 0 4px 16px rgba(62,31,51,0.08), 0 2px 4px rgba(62,31,51,0.04);
+  --s3: 0 12px 40px rgba(62,31,51,0.11), 0 4px 8px rgba(62,31,51,0.05);
+  --s4: 0 24px 64px rgba(62,31,51,0.14), 0 8px 16px rgba(62,31,51,0.06);
+}
+
+body { background: var(--cream); color: var(--ink); }
+::selection { background: var(--teal); color: #fff; }
+
+/* ── THE PLUM BLOCKS ─────────────────────────────────────────── */
+.announce { background: var(--plum); border-bottom: 1px solid rgba(255,255,255,0.10); }
+.hero     { background: var(--plum-deep); }
+.pillars  { background: var(--plum); }
+footer    { background: var(--plum-deep); }
+
+/* Announce bar */
+.announce-inner { color: rgba(255,255,255,0.82); }
+.announce strong { color: #fff; }
+.announce-dot { background: rgba(255,255,255,0.32); }
+.announce-cta { color: var(--teal-bright); }
+.announce-cta:hover { color: #fff; }
+
+/* Pillars band — bright teal so the accent survives on plum */
+.pillars .section-title, .pillars .pillar-h3 { color: #fff; }
+.pillars-eyebrow { color: var(--teal-bright) !important; }
+.pillar-num  { color: var(--teal-bright); }
+.pillar-rule { background: rgba(255,255,255,0.18); }
+.pillar-p    { color: rgba(255,255,255,0.72); }
+.pillar      { border-top-color: rgba(255,255,255,0.16); }
+
+/* Footer */
+footer { color: rgba(255,255,255,0.72); }
+.footer-brand-name { color: #fff; }
+.footer-brand-tag  { color: var(--teal-bright); }
+.footer-brand-desc { color: rgba(255,255,255,0.60); }
+.footer-col h4     { color: rgba(255,255,255,0.55); }
+.footer-links a    { color: rgba(255,255,255,0.72); }
+.footer-links a:hover { color: var(--teal-bright); }
+.footer-top, .footer-bottom { border-color: rgba(255,255,255,0.12); }
+.footer-bottom { color: rgba(255,255,255,0.45); }
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+.site-nav.lifted, .site-nav.scrolled { border-bottom: 1px solid var(--line); }
+.nav-logo-badge { background: var(--plum); }
+.nav-logo-name  { color: var(--plum); }
+.nav-links a:hover, .nav-links a.active { color: var(--teal); }
+.nav-burger span { background: var(--plum); }
+
+/* ── HEADINGS ────────────────────────────────────────────────── */
+h1, h2, h3, h4 { color: var(--plum); }
+.section-title, .intro-h2, .bento-h3, .svc-index-title { color: var(--plum); }
+.hero-h1 { color: #fff; }
+.hero-h1 em { color: var(--teal-bright); font-style: italic; }
+
+/* ── BUTTONS — solid teal, white label ───────────────────────── */
+.nav-cta, .form-btn, .btn-hero-primary {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+  color: #fff !important;
+}
+.nav-cta:hover, .form-btn:hover:not(:disabled), .btn-hero-primary:hover {
+  background: var(--teal-dark) !important;
+  border-color: var(--teal-dark) !important;
+}
+.btn-hero-ghost {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.55);
+  color: #fff;
+}
+.btn-hero-ghost:hover { background: rgba(255,255,255,0.20); }
+.hero-tag-dot { background: var(--teal-bright); box-shadow: 0 0 0 4px rgba(63,191,174,0.28); }
+.hero-progress-bar { background: var(--teal-bright); }
+
+/* ── LINKS & ACCENTS ─────────────────────────────────────────── */
+.eyebrow { color: var(--teal); }
+.eyebrow-sage { color: var(--plum); }
+.svc-link, .svc-index-cta, .dl-cta, .faq-foot a, .faq-item p a { color: var(--teal); }
+.svc-link:hover, .svc-index-cta:hover { border-bottom-color: var(--teal); }
+.svc-ico { color: var(--teal); background: var(--teal-light); border-color: rgba(15,122,110,0.18); }
+.svc-card:hover { border-color: var(--teal); }
+.faq-item summary:hover, .faq-item[open] summary { color: var(--teal); }
+.faq-item summary::after { border-color: var(--teal); }
+.check-icon { background: var(--teal); }
+.contact-row-icon { background: var(--teal-light); color: var(--teal); }
+.contact-row-icon svg { fill: var(--teal); stroke: var(--teal); }
+.contact-row-val a { color: var(--teal); }
+.dl-icon { background: var(--teal-light); color: var(--teal); }
+.dl-icon svg { stroke: var(--teal); }
+
+/* Chips */
+.bento-chip { background: var(--warm); color: var(--ink-mid); }
+.bento-chip.rose { background: var(--teal-light); color: var(--teal-dark); }
+.bento-chip.gold { background: var(--plum-light); color: var(--plum); }
+
+/* Pull-quote */
+.intro-pull { background: var(--plum-light); border-left: 3px solid var(--plum); }
+.intro-pull p { color: var(--plum); }
+
+/* ── CALENDAR / FORMS ────────────────────────────────────────── */
+.cal-day.selected { background: var(--teal); color: #fff; }
+.cal-day.today { color: var(--teal); font-weight: 700; }
+.cal-day.today::after { background: var(--teal); }
+.cal-day.available:hover { background: var(--teal-light); color: var(--teal-dark); }
+.slot:hover { border-color: var(--teal); color: var(--teal-dark); }
+.slot.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
+.form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(15,122,110,0.12); outline: none; }
+.booking-summary { background: var(--teal-light); border: 1px solid rgba(15,122,110,0.20); }
+.booking-summary strong { color: var(--teal-dark); }
+.form-note a { color: var(--teal); }
+
+/* ── GOLD: stars & celebration only ──────────────────────────── */
+.star, .badge-star { color: var(--gold); }
+.review-badge { background: var(--gold-light); color: #8a6420; }
+
+/* ── REVIEWS ─────────────────────────────────────────────────── */
+.review-card:hover { border-color: var(--teal); }
+.review-card::before { color: var(--plum-light); }
+
+/* Portrait caption */
+.about-portrait-cap { background: var(--plum); }
+.about-portrait-cap p { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

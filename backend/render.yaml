@@ -1,0 +1,31 @@
+# Render.com — one-click backend deploy
+services:
+  - type: web
+    name: divine-birth-api
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        sync: false     # set to your Netlify URL
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false     # Gmail App Password
+      - key: NOTIFY_EMAIL
+        sync: false
+      - key: AT_API_KEY
+        sync: false
+      - key: AT_USERNAME
+        sync: false
+      - key: CLINIC_PHONE
+        value: "+254794444141"

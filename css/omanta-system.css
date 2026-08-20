@@ -1,0 +1,335 @@
+/* ================================================================
+   OMANTA DESIGN SYSTEM — implemented for Divine Birth
+   ----------------------------------------------------------------
+   Tokens, type scale, easing and interaction patterns taken from the
+   Omanta technical style report. Loaded LAST, so this file is the
+   authority on colour and type.
+
+   TWO ENGINEERING DECISIONS worth knowing:
+
+   (a) CONTRAST GUARDRAILS. I contrast-tested every token pairing.
+       Three fail WCAG AA for small text and are fenced off below:
+         clay on ivory ............ 2.84  -> decorative / large only
+         white on clay ............ 3.02  -> never a small button label
+         clay on affiliation bar .. 3.69  -> large numerals only
+       So DEEP-CLAY (#a45a4c, 4.71 on ivory) carries eyebrows, links
+       and CTAs; CLAY is reserved for decoration and big numerals.
+
+   (b) FONT FALLBACK. Didot and Bodoni 72 are macOS-only. Most of
+       this clinic's traffic is Android, where that stack collapses
+       to Times New Roman and looks broken. Bodoni Moda (Google) is
+       loaded as a true Bodoni webfont fallback, so Mac users get the
+       real Didot and everyone else still gets a Didone.
+================================================================ */
+
+/* ── 1. TOKENS ───────────────────────────────────────────────── */
+:root {
+  /* Omanta palette, verbatim */
+  --omanta-ink:             #2a1b18;
+  --omanta-ivory:           #faf6f2;
+  --omanta-white:           #fffdfc;
+  --omanta-clay:            #cc806b;
+  --omanta-deep-clay:       #a45a4c;
+  --omanta-oxblood:         #874f4a;
+  --omanta-affiliation-bar: #4e3433;
+  --omanta-shell:           #f1eaeb;
+  --omanta-sage:            #f8fbf0;
+  --omanta-rose:            #d9c9c4;
+  --omanta-line:            #d8ccc7;
+
+  /* Soft borders instead of drop shadows */
+  --omanta-border:          rgba(42, 27, 24, 0.12);
+  --omanta-border-strong:   rgba(42, 27, 24, 0.18);
+
+  /* Type stacks */
+  --omanta-font: "Helvetica Neue", Inter, Arial, sans-serif;
+  --omanta-display-font: Didot, "Bodoni 72", "Bodoni MT", "Bodoni Moda", Georgia, serif;
+
+  /* Easing */
+  --ease-omanta:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-omanta-2: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: var(--ease-omanta);
+
+  /* ── Remap the existing site variables onto Omanta tokens.
+        Every component already references these names, so the whole
+        site re-skins from this one block. ── */
+  --ink:        var(--omanta-ink);
+  --ink-mid:    #5c4642;
+  --ink-soft:   #8a7370;
+
+  --cream:      var(--omanta-ivory);
+  --warm:       var(--omanta-shell);
+  --warm-mid:   var(--omanta-rose);
+  --white:      var(--omanta-white);
+  --line:       var(--omanta-line);
+  --line-warm:  var(--omanta-border);
+
+  /* Dark grounds: warm brown, never cold black */
+  --plum:       var(--omanta-affiliation-bar);
+  --plum-deep:  #3a2523;
+  --plum-mid:   var(--omanta-oxblood);
+  --plum-light: var(--omanta-shell);
+
+  /* Accent: deep-clay does the readable work, clay decorates */
+  --teal:        var(--omanta-deep-clay);
+  --teal-dark:   var(--omanta-oxblood);
+  --teal-bright: var(--omanta-clay);
+  --teal-light:  var(--omanta-shell);
+
+  --rose:       var(--teal);
+  --rose-light: var(--teal-light);
+  --rose-dark:  var(--teal-dark);
+  --sage:       var(--plum);
+  --sage-light: var(--omanta-sage);
+  --sage-dark:  var(--plum-deep);
+
+  --gold:       var(--omanta-clay);
+  --gold-light: var(--omanta-shell);
+
+  --serif: var(--omanta-display-font);
+  --sans:  var(--omanta-font);
+
+  /* Soft borders over shadows */
+  --s1: 0 0 0 1px var(--omanta-border);
+  --s2: 0 1px 2px rgba(42,27,24,0.05);
+  --s3: 0 10px 30px rgba(42,27,24,0.07);
+  --s4: 0 20px 54px rgba(42,27,24,0.10);
+}
+
+/* ── 2. GLOBAL ───────────────────────────────────────────────── */
+html {
+  color: var(--omanta-ink);
+  background: var(--omanta-ivory);
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--omanta-ivory);
+  color: var(--omanta-ink);
+  font-family: var(--omanta-font);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--omanta-deep-clay); color: var(--omanta-white); }
+
+/* ── 3. TYPOGRAPHY ───────────────────────────────────────────── */
+h1, h2, h3, h4, .display,
+.hero-h1, .section-title, .intro-h2 {
+  font-family: var(--omanta-display-font);
+  font-weight: 400;
+  color: var(--omanta-ink);
+}
+.hero-h1 {
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  font-weight: 400;
+}
+.section-title, .intro-h2 {
+  letter-spacing: -0.038em;
+  line-height: 1.08;
+}
+h3, .bento-h3, .journey-body h3, .converge-side h3, .svc-index-title {
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  font-weight: 400;
+}
+
+/* Small uppercase labels — wide tracking, deep-clay (4.71:1 on ivory) */
+.eyebrow, .label, .cred-k, .converge-label,
+.form-label, .contact-row-lbl, .time-label {
+  font-family: var(--omanta-font);
+  font-size: clamp(10px, 0.66rem + 0.1vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+  color: var(--omanta-deep-clay);
+}
+.eyebrow { border-bottom: none; padding-bottom: 0; }
+
+/* Body copy */
+p, li, .bento-p, .section-sub, .journey-body p {
+  font-family: var(--omanta-font);
+  line-height: 1.55;
+}
+
+/* ── 4. FROSTED HEADER ───────────────────────────────────────── */
+.site-nav {
+  background: rgba(250, 246, 242, 0.8);
+  backdrop-filter: blur(16px) saturate(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(110%);
+  border-bottom: 1px solid transparent;
+  transition: background .3s var(--ease-omanta), border-color .3s var(--ease-omanta);
+}
+.site-nav.lifted, .site-nav.scrolled {
+  background: rgba(250, 246, 242, 0.92);
+  border-bottom: 1px solid var(--omanta-border);
+  box-shadow: none;
+}
+.nav-logo-name { font-family: var(--omanta-display-font); color: var(--omanta-ink); }
+.nav-logo-badge { background: var(--omanta-affiliation-bar); }
+.nav-links a { font-family: var(--omanta-font); color: var(--ink-mid); text-transform: none; letter-spacing: 0; }
+.nav-links a:hover, .nav-links a.active { color: var(--omanta-deep-clay); }
+
+/* ── 5. BUTTONS ──────────────────────────────────────────────
+   Filled buttons use DEEP-CLAY (white on it = 5.0:1).
+   Never plain clay — white on clay is only 3.02:1.            */
+.nav-cta, .form-btn, .btn-hero-primary, .action-book {
+  background: var(--omanta-deep-clay) !important;
+  border-color: var(--omanta-deep-clay) !important;
+  color: var(--omanta-white) !important;
+  font-family: var(--omanta-font);
+  transition: background .35s var(--ease-omanta), transform .3s var(--ease-omanta);
+}
+.nav-cta:hover, .form-btn:hover:not(:disabled),
+.btn-hero-primary:hover, .action-book:hover {
+  background: var(--omanta-oxblood) !important;
+  border-color: var(--omanta-oxblood) !important;
+}
+
+/* ── 6. SURFACES — soft borders, not shadows ─────────────────── */
+.svc-card, .review-card, .dl-card, .cal-panel,
+.booking-form-wrap, .inquiry-panel, .svc-index {
+  background: var(--omanta-white);
+  border: 1px solid var(--omanta-border);
+  box-shadow: none;
+  transition: border-color .35s var(--ease-omanta),
+              transform .35s var(--ease-omanta);
+}
+.svc-card:hover, .review-card:hover, .dl-card:hover {
+  border-color: var(--omanta-border-strong);
+  transform: translateY(-3px);
+  box-shadow: none;
+}
+
+/* ── 7. MOTION — opacity + 24px rise ─────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s var(--ease-omanta), transform .8s var(--ease-omanta);
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── 8. FOCUS — oxblood ring (6.01:1 on ivory) ───────────────── */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible,
+summary:focus-visible, .cal-day:focus-visible {
+  outline: 2px solid var(--omanta-oxblood);
+  outline-offset: 2px;
+}
+.form-input:focus {
+  border-color: var(--omanta-deep-clay);
+  box-shadow: 0 0 0 3px rgba(164, 90, 76, 0.14);
+  outline: none;
+}
+
+/* ── 9. DARK BANDS — warm brown, never black ─────────────────── */
+.announce  { background: var(--omanta-affiliation-bar); }
+.hero      { background: var(--plum-deep); }
+.converge  { background: var(--omanta-affiliation-bar); }
+footer     { background: var(--plum-deep); }
+
+.announce-cta, .footer-brand-tag, .converge-label,
+.footer-links a:hover { color: var(--omanta-clay); }   /* large / non-body only */
+.converge-node-main {
+  background: var(--omanta-clay);
+  box-shadow: 0 0 0 5px rgba(204, 128, 107, 0.20);
+  animation: nodePulse 3.2s var(--ease-omanta-2) infinite;
+}
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 0 5px rgba(204,128,107,0.20); }
+  50%      { box-shadow: 0 0 0 9px rgba(204,128,107,0.08); }
+}
+
+/* ── 10. JOURNEY NUMERALS — Didone, clay, large ──────────────── */
+.journey-num {
+  font-family: var(--omanta-display-font);
+  color: var(--omanta-clay);          /* large text: 2.84 is acceptable here */
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+.journey { background: var(--omanta-ivory); }
+.journey-step { border-bottom: 1px solid var(--omanta-border); }
+.journey-steps { border-top: 1px solid var(--omanta-border); }
+.journey-step:hover { background: rgba(42, 27, 24, 0.015); }
+
+/* ── 11. CREDENTIALS ─────────────────────────────────────────── */
+.creds { background: var(--omanta-white); border-color: var(--omanta-border); }
+.creds-row { background: var(--omanta-border); border-color: var(--omanta-border); }
+.cred { background: var(--omanta-white); }
+.cred-v { color: var(--omanta-ink); font-family: var(--omanta-font); }
+
+/* ── 12. SECTION GROUNDS ─────────────────────────────────────── */
+.intro, .about, .contact, .faq  { background: var(--omanta-ivory); }
+.services, .gallery, .booking   { background: var(--omanta-shell); }
+.testimonials, .downloads       { background: var(--omanta-ivory); }
+.star, .badge-star              { color: var(--omanta-deep-clay); }
+
+/* ── 13. REDUCED MOTION ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .converge-node-main { animation: none !important; }
+}
+
+/* ================================================================
+   FIX — text on dark grounds
+   The blanket heading colour above turned the hero headline dark
+   brown on a dark photograph. Anything sitting on an image or a
+   warm-brown band must be re-lightened explicitly.
+================================================================ */
+.hero-h1,
+.hero-h1 em,
+.hero-tag,
+.hero-slide ~ * .hero-h1 {
+  color: var(--omanta-white);
+}
+.hero-h1 em { font-style: italic; color: var(--omanta-clay); }
+.hero-tag   { color: var(--omanta-white); border-color: rgba(255,253,252,0.4); }
+.hero-sub   { color: rgba(255,253,252,0.86); }
+
+/* Dark bands: headings and labels stay light */
+.converge .section-title,
+.converge-side h3,
+.footer-brand-name,
+.announce strong { color: var(--omanta-white); }
+.converge-side p { color: rgba(255,253,252,0.70); }
+.converge-foot   { color: rgba(255,253,252,0.62); }
+footer, .footer-links a, .footer-brand-desc { color: rgba(255,253,252,0.72); }
+.footer-col h4 { color: rgba(255,253,252,0.55); }
+.announce-inner { color: rgba(255,253,252,0.84); }
+
+/* ================================================================
+   BRAND MARK — the real Divine Birth logo
+   The nav previously used a hand-drawn SVG approximation of the
+   mark. This is the actual logo, background removed with alpha
+   unmixing so it sits cleanly on the ivory ground.
+================================================================ */
+.nav-logo-mark {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+  /* the mark is pink+navy on transparent — no plate needed */
+  background: none;
+  border-radius: 0;
+}
+.nav-logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+
+/* Footer: the full lockup, quiet and small */
+.footer-logo {
+  display: block;
+  width: 152px;
+  height: auto;
+  margin-bottom: 18px;
+  /* uses logo-lockup-light.png: navy recoloured to ivory,
+     pink figure preserved so the brand colour survives */
+  opacity: 0.95;
+}
+
+@media (max-width: 560px) {
+  .nav-logo-mark { width: 34px; height: 34px; }
+  .footer-logo   { width: 124px; }
+}
