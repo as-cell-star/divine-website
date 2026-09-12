@@ -1,19 +1,13 @@
-# Secrets — NEVER commit these
-backend/.env
-.env
-
-# Dependencies
-node_modules/
-backend/node_modules/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+node_modules
+.output
+.vinxi
+dist
+.vercel
+.grok/preview.pid
+.grok/preview.log
 *.log
-npm-debug.log*
-
-# Build artifacts
-dist/
-build/
+.env
+.env.local
+artifacts
+screenshots
+attachments
