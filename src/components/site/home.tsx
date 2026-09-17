@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock, FlaskConical, HeartHandshake, MapPin, Scan, ShieldCheck, Users } from "lucide-react";
+import { Check, Clock, MapPin } from "lucide-react";
 import { ActionBar } from "@/components/site/action-bar";
 import { BookingForm } from "@/components/site/booking-form";
 import { SiteFooter } from "@/components/site/footer";
@@ -9,447 +9,274 @@ import { CLINIC } from "@/lib/cms/defaults";
 import type { SitePayload } from "@/lib/cms/types";
 
 const JOURNEY = [
-  { n: "01", t: "Booking & antenatal care", p: "We open your file, confirm dates, and begin scheduled check-ups — monitoring you and your baby through every trimester." },
-  { n: "02", t: "Preparing for the day", p: "Antenatal classes, birth planning, and honest conversations about what you want — and what happens if plans need to change." },
-  { n: "03", t: "Labour & birth", p: "A qualified midwife stays with you throughout. If your birth needs care beyond this centre, we stabilise and refer immediately." },
-  { n: "04", t: "The first days at home", p: "Recovery checks, feeding and latch support, newborn weight, and your emotional wellbeing — at the clinic or at your home." },
-  { n: "05", t: "Your child’s first year", p: "Immunisations, growth monitoring and developmental checks, so you always know what comes next and when to return." },
+  { n: "01", t: "Antenatal", p: "Your file, your dates, check-ups through every trimester — same midwives." },
+  { n: "02", t: "Prepare", p: "Classes, a birth plan, and what happens if the plan has to change." },
+  { n: "03", t: "Birth", p: "A midwife stays with you. Hospital referral the moment you need it." },
+  { n: "04", t: "Home", p: "Recovery, latch, newborn weight — at the clinic or at your house." },
+  { n: "05", t: "Year one", p: "Immunisations, growth, next appointment already booked." },
 ];
 
-const FEATURED = [
-  { img: "/images/photo-handover.jpg", chip: "Flagship", title: "Birthing Services", body: "Midwife-led deliveries in a calm, private suite. You are attended continuously by the same team, day or night.", href: "/#booking", cta: "Book a birth consultation" },
-  { img: "/images/photo-mother-baby.jpg", chip: "Postnatal", title: "Postnatal Clinic", body: "Follow-up for you and your baby after birth — recovery, breastfeeding, newborn weight, and your emotional wellbeing.", href: "/#booking", cta: "Book a postnatal visit" },
-  { img: "/images/photo-swaddled.jpg", chip: "Paediatric", title: "Child Welfare Clinic", body: "Immunisations, growth monitoring and developmental checks — every dose and milestone, clearly tracked.", href: "/#booking", cta: "Book a welfare check" },
-  { img: "/images/photo-twins.jpg", chip: "Always open", title: "24 / 7 Emergency Care", body: "Babies do not keep office hours. A qualified midwife is on site around the clock, including public holidays.", href: `tel:${CLINIC.phonePrimary}`, cta: "Call the centre now" },
+const BANDS = [
+  {
+    img: "/images/photo-handover.jpg",
+    alt: "Midwife placing a newborn into her mother's arms",
+    k: "Birth",
+    t: "Birthing services",
+    p: "A private suite. The same team, day or night. We transfer immediately if a birth needs a hospital.",
+    href: "/#booking",
+    cta: "Book a birth consultation",
+    dark: true,
+    flip: false,
+  },
+  {
+    img: "/images/photo-mother-baby.jpg",
+    alt: "Mother and midwife with a newborn",
+    k: "After birth",
+    t: "Postnatal clinic",
+    p: "Recovery, breastfeeding, newborn weight, and how you actually feel — for you and the baby.",
+    href: "/#booking",
+    cta: "Book a postnatal visit",
+    dark: false,
+    flip: true,
+  },
+  {
+    img: "/images/photo-swaddled.jpg",
+    alt: "Midwife holding a swaddled newborn",
+    k: "Paediatric",
+    t: "Child welfare",
+    p: "Immunisations, growth monitoring, developmental checks. Every dose tracked.",
+    href: "/#booking",
+    cta: "Book a welfare check",
+    dark: true,
+    flip: false,
+  },
 ];
 
 const ALSO = [
-  { icon: HeartHandshake, t: "Antenatal Care", p: "Scheduled check-ups, monitoring and screening through every trimester." },
-  { icon: Users, t: "Antenatal Classes & Exercise", p: "Preparation for labour — breathing, positions, and what to expect on the day." },
-  { icon: Scan, t: "Ultrasound Scans", p: "Dating, anomaly and growth scans, reported on site." },
-  { icon: FlaskConical, t: "Laboratory Services", p: "Routine bloods, urinalysis and maternal screening, processed in-house." },
-  { icon: HeartHandshake, t: "Doula & Wellness Support", p: "Continuous companionship in labour, plus maternal mental-health support." },
-  { icon: ShieldCheck, t: "Family Planning", p: "Confidential counselling and the full range of contraceptive options." },
+  ["Antenatal care", "Check-ups and screening, every trimester."],
+  ["Classes", "Breathing, positions, the day of labour."],
+  ["Ultrasound", "Dating, anomaly and growth scans on site."],
+  ["Laboratory", "Bloods, urinalysis, maternal screening."],
+  ["Doula & wellness", "Companionship in labour. Mental-health support."],
+  ["Family planning", "Confidential counselling and options."],
 ];
 
 const CHECKS = [
-  "Highly qualified, experienced professional midwives",
-  "Immaculately hygienic, calm and private birthing rooms",
-  "Standby medical referral protocols for your safety",
-  "On-site laboratory and ultrasound diagnostics",
-  "Affordable, high-quality services for every family",
-  "Mental health and maternal wellness support",
+  "Midwives on site 24 hours — not on call from home",
+  "Private birthing rooms",
+  "Hospital referral protocols",
+  "Lab and ultrasound in the building",
 ];
-
-function Eyebrow({ children }: { children: string }) {
-  return (
-    <span className="block text-xs font-semibold tracking-[0.22em] text-teal uppercase">{children}</span>
-  );
-}
 
 export function HomePage({ data }: { data: SitePayload }) {
   const { content, hero, gallery, testimonials, faqs } = data;
+  const lead = testimonials[0];
+  const rest = testimonials.slice(1);
 
   return (
-    <div className="bg-cream pb-16 md:pb-0">
+    <div className="bg-paper pb-16 md:pb-0">
       <SiteHeader />
       <Hero content={content} slides={hero} />
 
-      <section className="border-b border-border bg-cream" aria-label="Key facts">
-        <div className="site-wrap grid grid-cols-2 md:grid-cols-4">
-          {[
-            { v: "5.0", l: "Google rating", s: "from verified reviews" },
-            { v: "24/7", l: "Open every hour", s: "including public holidays" },
-            { v: "1 team", l: "Start to finish", s: "no handovers between strangers" },
-            { v: "KMHFR", l: "Licensed facility", s: "Ministry of Health register" },
-          ].map((m, i) => (
-            <div key={m.l} className={i === 0 ? "py-8 md:py-10" : "border-border py-8 md:border-l md:py-10 md:pl-8"}>
-              <p className="font-display text-3xl tracking-tight text-plum md:text-4xl">{m.v}</p>
-              <p className="mt-2 text-sm text-ink">{m.l}</p>
-              <p className="text-sm text-ink-soft">{m.s}</p>
+      <div className="bg-plum text-[12px] tracking-[0.16em] text-white/80 uppercase">
+        <p className="site-wrap flex flex-wrap gap-x-10 gap-y-2 py-3">
+          <span className="text-gold">5.0 Google</span>
+          <span>Open 24 / 7</span>
+          <span>KMHFR licensed</span>
+          <span>Kahawa Wendani</span>
+        </p>
+      </div>
+
+      <section className="py-16 md:py-24">
+        <div className="site-wrap max-w-4xl">
+          <h2 className="font-display text-[clamp(2.6rem,6vw,4.8rem)] leading-[1.02] text-ink">{content.introTitle}</h2>
+          <p className="mt-8 max-w-2xl text-[17px] leading-relaxed text-ink-mid">{content.introBody1}</p>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-mid">{content.introBody2}</p>
+        </div>
+        <img src="/images/team-main.jpg" alt="Divine Birth team with newborns" className="mt-12 h-[min(52vw,480px)] w-full object-cover" />
+      </section>
+
+      <section id="journey" className="scroll-mt-20 border-y border-border py-16 md:py-24">
+        <div className="site-wrap">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-teal uppercase">Pathway</p>
+          <h2 className="font-display mt-2 text-[clamp(2rem,4vw,3.2rem)] text-ink">First scan to first birthday.</h2>
+          <ol className="mt-12 divide-y divide-border border-y border-border">
+            {JOURNEY.map((s) => (
+              <li key={s.n} className="grid gap-2 py-6 md:grid-cols-[4.5rem_12rem_1fr] md:items-baseline">
+                <span className="font-display text-2xl text-teal">{s.n}</span>
+                <h3 className="font-display text-2xl text-ink">{s.t}</h3>
+                <p className="text-[15px] text-ink-mid">{s.p}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section id="services" className="scroll-mt-20">
+        {BANDS.map((b) => (
+          <article key={b.t} className="grid lg:grid-cols-2">
+            <img
+              src={b.img}
+              alt={b.alt}
+              className={`h-[320px] w-full object-cover lg:h-[min(70vh,560px)] ${b.flip ? "lg:order-2" : ""}`}
+            />
+            <div
+              className={`flex flex-col justify-center px-6 py-12 sm:px-12 ${
+                b.dark ? "bg-plum text-white" : "bg-cream text-ink"
+              } ${b.flip ? "lg:order-1" : ""}`}
+            >
+              <p className={`text-[11px] font-semibold tracking-[0.22em] uppercase ${b.dark ? "text-gold" : "text-teal"}`}>{b.k}</p>
+              <h3 className="font-display mt-3 text-[clamp(2rem,4vw,3.2rem)] leading-[1.05]">{b.t}</h3>
+              <p className={`mt-4 max-w-md text-[15px] leading-relaxed ${b.dark ? "text-white/75" : "text-ink-mid"}`}>{b.p}</p>
+              <a href={b.href} className={`mt-6 text-sm font-semibold ${b.dark ? "text-gold" : "text-teal"}`}>
+                {b.cta} →
+              </a>
             </div>
+          </article>
+        ))}
+        <a href={`tel:${CLINIC.phonePrimary}`} className="flex flex-col gap-1 bg-teal px-6 py-8 text-white sm:flex-row sm:items-center sm:justify-between sm:px-12">
+          <span>
+            <span className="block text-[11px] tracking-[0.2em] text-gold uppercase">Always on site</span>
+            <span className="font-display text-3xl">24 / 7 emergency care</span>
+          </span>
+          <span className="text-sm font-semibold">Call {CLINIC.phonePrimaryDisplay} →</span>
+        </a>
+        <div className="site-wrap py-16">
+          <h3 className="font-display text-3xl text-ink">Also in the building</h3>
+          <ul className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3">
+            {ALSO.map(([t, p]) => (
+              <li key={t} className="border-t border-border py-5 pr-6">
+                <h4 className="font-semibold text-ink">{t}</h4>
+                <p className="mt-1 text-sm text-ink-mid">{p}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section id="booking" className="scroll-mt-20 bg-plum py-16 text-white md:py-24">
+        <div className="site-wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-gold uppercase">Appointments</p>
+            <h2 className="font-display mt-3 text-[clamp(2.4rem,5vw,4rem)] leading-[1.02]">Come in.</h2>
+            <p className="mt-4 max-w-sm text-[15px] text-white/70">
+              Pick a day. We save it, archive it, and send it to the midwives. In labour? Call. Do not wait on a form.
+            </p>
+            <p className="mt-8 text-sm text-white/55">{CLINIC.hours}</p>
+          </div>
+          <div className="bg-paper p-1 text-ink">
+            <BookingForm />
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="scroll-mt-20 grid lg:grid-cols-2">
+        <img src="/images/hero4.jpg" alt="Midwife holding a newborn" className="h-[360px] w-full object-cover object-[center_18%] lg:h-full lg:min-h-[560px]" />
+        <div className="flex flex-col justify-center bg-paper px-6 py-14 sm:px-12">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-teal uppercase">The centre</p>
+          <h2 className="font-display mt-3 text-[clamp(1.9rem,3.5vw,2.8rem)] leading-[1.08] text-ink">{content.aboutTitle}</h2>
+          <p className="mt-4 text-[15px] leading-relaxed text-ink-mid">{content.aboutBody1}</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-mid">{content.aboutBody2}</p>
+          <ul className="mt-6 space-y-2">
+            {CHECKS.map((c) => (
+              <li key={c} className="flex gap-2 text-sm">
+                <Check className="mt-0.5 size-4 shrink-0 text-teal" />
+                {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section id="gallery" className="scroll-mt-20 bg-plum-deep py-16">
+        <div className="site-wrap mb-8">
+          <h2 className="font-display text-4xl text-white">Inside the rooms.</h2>
+        </div>
+        <div className="site-wrap mosaic">
+          {(gallery.length ? gallery : []).slice(0, 5).map((g) => (
+            <figure key={g.id}>
+              <img src={g.url} alt={g.alt || g.title} />
+            </figure>
           ))}
         </div>
       </section>
 
-      <section className="py-20 md:py-28">
-        <div className="site-wrap grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <Eyebrow>{content.introEyebrow}</Eyebrow>
-            <span className="gold-rule mt-4" />
-            <h2 className="font-display mt-5 max-w-lg text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] text-balance text-plum">
-              {content.introTitle}
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-pretty text-ink-mid">{content.introBody1}</p>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-pretty text-ink-mid">{content.introBody2}</p>
-            <blockquote className="mt-8 border-l-2 border-gold pl-5 font-display text-xl leading-snug text-plum">
-              “{content.introPull}”
+      <section id="testimonials" className="scroll-mt-20 py-16 md:py-24">
+        <div className="site-wrap">
+          {lead ? (
+            <blockquote>
+              <p className="font-display text-[clamp(1.8rem,4.2vw,3.4rem)] leading-[1.1] text-ink">“{lead.quote}”</p>
+              <footer className="mt-6 text-[12px] tracking-[0.16em] text-teal uppercase">{lead.author}</footer>
             </blockquote>
-            <a href="/#services" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-teal">
-              Explore all services <ArrowRight className="size-4" />
-            </a>
-          </div>
-          <div className="relative">
-            <div className="overflow-hidden rounded-lg">
-              <img
-                src="/images/team-main.jpg"
-                alt="Divine Birth midwifery team with newborns"
-                className="aspect-4/5 w-full object-cover"
-                width={900}
-                height={1125}
-              />
-            </div>
-            <div className="absolute -bottom-5 left-5 border border-border bg-paper px-4 py-3 shadow-soft">
-              <p className="text-sm font-semibold text-plum">5.0 Google rating</p>
-              <p className="text-xs text-ink-soft">Kahawa Wendani, Nairobi</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="journey" className="scroll-mt-24 border-y border-border bg-warm py-20 md:py-28">
-        <div className="site-wrap">
-          <Eyebrow>The Divine Birth pathway</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 max-w-2xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.1] text-balance text-plum">
-            One team, from your first scan to your child’s first year.
-          </h2>
-          <p className="mt-4 max-w-xl text-base text-ink-mid">
-            You are not handed between strangers. The same midwifery team carries your care through every stage below.
-          </p>
-          <ol className="mt-14 divide-y divide-border border-y border-border">
-            {JOURNEY.map((s) => (
-              <li key={s.n} className="grid gap-3 py-8 md:grid-cols-[5rem_1fr_1.4fr] md:items-baseline md:gap-10">
-                <span className="font-display text-3xl text-gold">{s.n}</span>
-                <h3 className="font-display text-2xl text-plum">{s.t}</h3>
-                <p className="text-sm leading-relaxed text-ink-mid md:text-base">{s.p}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-8 text-sm text-ink-mid">
-            Every stage is available on its own — you do not have to start at 01.{" "}
-            <a href="/#booking" className="font-semibold text-teal">
-              Book any stage
-            </a>
-          </p>
-        </div>
-      </section>
-
-      <section id="services" className="scroll-mt-24 py-20 md:py-28">
-        <div className="site-wrap">
-          <Eyebrow>Midwifery & services</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 max-w-xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.1] text-balance text-plum">
-            Comprehensive care, every step of the way.
-          </h2>
-          <div className="mt-12 grid gap-4 md:grid-cols-2">
-            {FEATURED.map((s) => (
-              <article key={s.title} className="group relative min-h-[22rem] overflow-hidden rounded-lg md:min-h-[26rem]">
-                <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                <div className="service-veil absolute inset-0" />
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                  <p className="text-xs font-semibold tracking-[0.2em] text-gold uppercase">{s.chip}</p>
-                  <h3 className="font-display mt-2 text-3xl text-white">{s.title}</h3>
-                  <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">{s.body}</p>
-                  <a href={s.href} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold">
-                    {s.cta} <ArrowRight className="size-4" />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-8 border border-border bg-paper p-6 md:p-8">
-            <h3 className="font-display text-2xl text-plum">Also available at the centre</h3>
-            <p className="mt-2 max-w-xl text-sm text-ink-mid">
-              Clinical and support services, available to mothers registered with Divine Birth — and to walk-in patients.
-            </p>
-            <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {ALSO.map((s) => (
-                <li key={s.t} className="flex gap-3">
-                  <s.icon className="mt-0.5 size-5 shrink-0 text-teal" />
-                  <div>
-                    <h4 className="text-sm font-semibold text-plum">{s.t}</h4>
-                    <p className="mt-1 text-sm text-ink-mid">{s.p}</p>
-                  </div>
-                </li>
+          ) : null}
+          {rest.length ? (
+            <div className="mt-14 grid gap-10 border-t border-border pt-10 md:grid-cols-2">
+              {rest.map((t) => (
+                <article key={t.id}>
+                  <p className="text-[17px] leading-relaxed text-ink-mid">“{t.quote}”</p>
+                  <p className="mt-4 text-[11px] tracking-[0.16em] text-ink-soft uppercase">{t.author}</p>
+                </article>
               ))}
-            </ul>
-            <a href="/#booking" className="mt-8 inline-flex items-center gap-1 text-sm font-semibold text-teal">
-              Book any of these services <ArrowRight className="size-4" />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="booking" className="scroll-mt-24 bg-plum-deep py-20 text-white md:py-28">
-        <div className="site-wrap grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.22em] text-gold uppercase">Schedule a visit</p>
-            <span className="gold-rule mt-4" />
-            <h2 className="font-display mt-5 text-[clamp(2.2rem,4vw,3.4rem)] leading-[1.08] text-balance">Book an appointment.</h2>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-white/75">
-              Choose a date and time. Your request is saved, archived, and sent straight to the midwives. We confirm by SMS.
-              For labour or anything urgent, call — we are open now.
-            </p>
-            <p className="mt-6 text-sm text-white/60">
-              Open 24 / 7 · {CLINIC.phonePrimaryDisplay}
-            </p>
-          </div>
-          <BookingForm />
-        </div>
-      </section>
-
-      <section className="bg-plum py-20 text-white md:py-24">
-        <div className="site-wrap">
-          <p className="text-xs font-semibold tracking-[0.22em] text-gold uppercase">How decisions get made</p>
-          <h2 className="font-display mt-4 max-w-2xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.1] text-balance">
-            Nothing about your birth is decided without you.
-          </h2>
-          <div className="mt-12 grid gap-8 md:grid-cols-2">
-            <div className="border border-white/15 bg-white/5 p-6">
-              <p className="text-xs font-semibold tracking-[0.16em] text-gold uppercase">You and your family</p>
-              <h3 className="font-display mt-2 text-2xl">What matters to you</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/72">
-                Your birth plan, your fears, your faith, your family. You know your body and your circumstances better than anyone.
-              </p>
             </div>
-            <div className="border border-white/15 bg-white/5 p-6">
-              <p className="text-xs font-semibold tracking-[0.16em] text-gold uppercase">Your midwifery team</p>
-              <h3 className="font-display mt-2 text-2xl">What the evidence shows</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/72">
-                Clinical training, experience across hundreds of births, and clear referral protocols for the moment a birth needs more than we can safely give.
-              </p>
-            </div>
-          </div>
+          ) : null}
         </div>
       </section>
 
-      <section id="about" className="scroll-mt-24 py-20 md:py-28">
-        <div className="site-wrap grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <div className="overflow-hidden rounded-lg">
-              <img src="/images/hero4.jpg" alt="Midwife holding newborn" className="aspect-4/5 w-full object-cover" />
-            </div>
-            <p className="mt-3 text-sm italic text-ink-mid">Every birth a sacred, irreplaceable moment.</p>
-          </div>
-          <div>
-            <Eyebrow>About Divine Birth</Eyebrow>
-            <span className="gold-rule mt-4" />
-            <h2 className="font-display mt-5 text-[clamp(2rem,4vw,2.8rem)] leading-[1.1] text-balance text-plum">{content.aboutTitle}</h2>
-            <p className="mt-5 text-base leading-relaxed text-pretty text-ink-mid">{content.aboutBody1}</p>
-            <p className="mt-4 text-base leading-relaxed text-pretty text-ink-mid">{content.aboutBody2}</p>
-            <ul className="mt-6 space-y-2.5">
-              {CHECKS.map((c) => (
-                <li key={c} className="flex gap-2.5 text-sm text-ink">
-                  <Check className="mt-0.5 size-4 shrink-0 text-teal" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-            <a
-              href="/#booking"
-              className="mt-8 inline-flex h-11 items-center rounded-md bg-teal px-5 text-sm font-semibold text-white hover:bg-teal-dark"
-            >
-              Book a consultation
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="gallery" className="scroll-mt-24 bg-warm py-20 md:py-28">
+      <section className="bg-teal py-20 text-center text-white md:py-28">
         <div className="site-wrap">
-          <Eyebrow>Our centre</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3.2rem)] text-plum">Real moments. Real care.</h2>
-          <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
-            {gallery.map((g, i) => (
-              <figure key={g.id} className={i === 0 ? "col-span-2 row-span-2 overflow-hidden rounded-lg" : "overflow-hidden rounded-lg"}>
-                <img
-                  src={g.url}
-                  alt={g.alt || g.title}
-                  className="h-full w-full object-cover"
-                  style={{ aspectRatio: "4 / 5", minHeight: i === 0 ? 280 : 160 }}
-                />
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="testimonials" className="scroll-mt-24 py-20 md:py-28">
-        <div className="site-wrap">
-          <Eyebrow>Patient reviews</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3.2rem)] text-plum">Mothers trust us.</h2>
-          <div className="mt-12 grid gap-10 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <article key={t.id} className="border-t border-gold pt-6">
-                <p className="font-display text-2xl leading-snug text-plum">“{t.quote}”</p>
-                <p className="mt-5 text-xs font-semibold tracking-[0.14em] text-ink-soft uppercase">{t.author}</p>
-              </article>
-            ))}
-          </div>
-          <p className="mt-10 inline-flex items-center gap-2 text-sm text-ink-mid">
-            <Clock className="size-3.5 text-teal" />
-            5.0 on Google · {CLINIC.reviewCount} verified reviews · Alvo House, Kahawa Wendani
-          </p>
-        </div>
-      </section>
-
-      <section id="assurance" className="scroll-mt-24 border-y border-border bg-warm py-20 md:py-28">
-        <div className="site-wrap">
-          <Eyebrow>Safety & standards</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 max-w-xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.1] text-balance text-plum">
-            Built on the things that must not fail.
-          </h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <article className="bg-plum p-6 text-white md:col-span-2 lg:col-span-1 lg:row-span-2">
-              <span className="text-xs font-semibold tracking-[0.18em] text-gold uppercase">Always staffed</span>
-              <h3 className="font-display mt-4 text-2xl">A qualified midwife on site, 24 hours a day</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/72">
-                Labour does not keep office hours. Someone trained is here every hour of every day, including public holidays — not on call from home.
-              </p>
-            </article>
-            {[
-              ["Referral", "Clear escalation protocols", "If a birth needs care beyond a midwifery centre, we stabilise and transfer to a partner hospital immediately."],
-              ["Registration", "A licensed Kenyan facility", "Listed on the Ministry of Health master facility register (KMHFR). You can verify us independently before you ever walk in."],
-              ["Privacy", "Your records stay yours", "Clinical notes are kept confidential and shared only with the people involved in your care, or with your written consent."],
-              ["Continuity", "The same team, start to finish", "You are not handed between strangers. The midwives who see you antenatally are the ones who attend your birth."],
-            ].map(([k, t, p]) => (
-              <article key={k} className="border border-border bg-paper p-6">
-                <p className="text-xs font-semibold tracking-[0.16em] text-teal uppercase">{k}</p>
-                <h4 className="mt-2 text-base font-semibold text-plum">{t}</h4>
-                <p className="mt-2 text-sm leading-relaxed text-ink-mid">{p}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-plum-deep py-20 text-center text-white md:py-24">
-        <div className="site-wrap">
-          <h2 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[1.05] text-balance">
+          <h2 className="font-display text-[clamp(3rem,8vw,6rem)] leading-[0.9]">
             {content.statementLine1}
             <br />
-            <span className="italic text-gold">{content.statementLine2}</span>
+            <em className="italic">{content.statementLine2}</em>
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-white/72">Book a visit, ask a question, or simply come in. We are open right now.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="/#booking" className="inline-flex h-12 items-center rounded-md bg-teal px-6 text-sm font-semibold text-white hover:bg-teal-dark">
-              Book an appointment
-            </a>
-            <a href={`tel:${CLINIC.phonePrimary}`} className="inline-flex h-12 items-center rounded-md border border-white/35 px-6 text-sm font-semibold text-white">
-              Call {CLINIC.phonePrimaryDisplay}
-            </a>
-          </div>
+          <a href="/#booking" className="mt-10 inline-flex h-12 items-center bg-plum px-8 text-sm font-semibold text-white">
+            Book an appointment
+          </a>
         </div>
       </section>
 
-      <section id="faq" className="scroll-mt-24 py-20 md:py-28">
-        <div className="site-wrap max-w-3xl">
-          <Eyebrow>Common questions</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3.2rem)] text-plum">Answers, before you ask.</h2>
-          <div className="mt-10 divide-y divide-border border-y border-border">
+      <section id="faq" className="scroll-mt-20 py-16 md:py-24">
+        <div className="site-wrap grid gap-10 lg:grid-cols-[16rem_1fr]">
+          <h2 className="font-display text-4xl text-ink">Before you ask.</h2>
+          <div className="divide-y divide-border border-y border-border">
             {faqs.map((f) => (
               <details key={f.id} className="faq-item group py-5">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-left text-base font-semibold text-plum">
+                <summary className="flex cursor-pointer list-none justify-between gap-4 font-semibold">
                   {f.question}
-                  <span className="mt-1 text-ink-soft group-open:hidden">+</span>
-                  <span className="mt-1 hidden text-ink-soft group-open:inline">−</span>
+                  <span className="text-teal">+</span>
                 </summary>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-mid">{f.answer}</p>
+                <p className="mt-3 max-w-2xl text-sm text-ink-mid">{f.answer}</p>
               </details>
             ))}
           </div>
-          <p className="mt-8 text-sm text-ink-mid">
-            Still unsure? Call{" "}
-            <a className="font-semibold text-teal" href={`tel:${CLINIC.phonePrimary}`}>
-              0794 444 141
-            </a>{" "}
-            or{" "}
-            <a className="font-semibold text-teal" href={CLINIC.whatsapp} target="_blank" rel="noopener noreferrer">
-              message us on WhatsApp
-            </a>
-            .
-          </p>
         </div>
       </section>
 
-      <section id="contact" className="scroll-mt-24 bg-warm py-20 md:py-28">
-        <div className="site-wrap grid gap-10 lg:grid-cols-2">
+      <section id="contact" className="scroll-mt-20 bg-cream py-16 md:py-24">
+        <div className="site-wrap grid gap-12 lg:grid-cols-2">
           <div>
-            <Eyebrow>Find us</Eyebrow>
-            <span className="gold-rule mt-4" />
-            <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3rem)] text-plum">Get in touch.</h2>
-            <ul className="mt-8 space-y-5">
-              <li className="flex gap-3">
-                <MapPin className="mt-0.5 size-5 text-teal" />
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.16em] text-ink-soft uppercase">Address</p>
-                  <p className="text-sm text-ink">
-                    {CLINIC.addressLine1}
-                    <br />
-                    {CLINIC.addressLine2}
-                  </p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <Clock className="mt-0.5 size-5 text-teal" />
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.16em] text-ink-soft uppercase">Hours</p>
-                  <p className="text-sm text-ink">{CLINIC.hours}</p>
-                </div>
-              </li>
+            <h2 className="font-display text-4xl text-ink">Find us.</h2>
+            <ul className="mt-8 space-y-4 text-sm">
+              <li className="flex gap-2"><MapPin className="size-4 text-teal" />{CLINIC.addressLine1}, {CLINIC.addressLine2}</li>
+              <li className="flex gap-2"><Clock className="size-4 text-teal" />{CLINIC.hours}</li>
             </ul>
-            <p className="mt-4 text-sm">
-              <a className="font-semibold text-teal" href={`tel:${CLINIC.phonePrimary}`}>
-                {CLINIC.phonePrimaryDisplay}
-              </a>
-              {" / "}
-              <a className="font-semibold text-teal" href={`tel:${CLINIC.phoneSecondary}`}>
-                {CLINIC.phoneSecondaryDisplay}
-              </a>
+            <p className="mt-6 font-display text-3xl">
+              <a href={`tel:${CLINIC.phonePrimary}`}>{CLINIC.phonePrimaryDisplay}</a>
             </p>
-            <p className="mt-1 text-sm">
-              <a className="text-teal" href={`mailto:${CLINIC.emailPrimary}`}>
-                {CLINIC.emailPrimary}
-              </a>
+            <p className="mt-2 text-sm">
+              <a className="text-teal" href={`mailto:${CLINIC.emailPrimary}`}>{CLINIC.emailPrimary}</a>
             </p>
-            <div className="mt-8 overflow-hidden rounded-lg border border-border">
-              <iframe
-                title="Divine Birth Midwifery Centre"
-                src={CLINIC.mapsEmbed}
-                className="h-64 w-full"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+            <iframe title="Map" src={CLINIC.mapsEmbed} className="mt-8 h-64 w-full border border-border" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
           <InquiryForm />
         </div>
       </section>
 
-      <section id="downloads" className="scroll-mt-24 py-20">
-        <div className="site-wrap">
-          <Eyebrow>Resources</Eyebrow>
-          <span className="gold-rule mt-4" />
-          <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3.2rem)] text-plum">Download our materials.</h2>
-          <p className="mt-3 text-sm text-ink-mid">Our brochure and pull-up banner — ready to share or print.</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            <a href="/docs/Divine_Birth_Brochure.pdf" download className="border border-border bg-paper p-6 hover:border-teal">
-              <h3 className="font-display text-xl text-plum">Centre Brochure</h3>
-              <p className="mt-2 text-sm text-ink-mid">Full service listing, vision, mission and core values. Ideal for expectant families.</p>
-              <p className="mt-4 text-sm font-semibold text-teal">Download PDF</p>
-            </a>
-            <a href="/docs/Divine_Birth_Pullup_Banner.pdf" download className="border border-border bg-paper p-6 hover:border-teal">
-              <h3 className="font-display text-xl text-plum">Pull-Up Banner</h3>
-              <p className="mt-2 text-sm text-ink-mid">High-quality banner artwork with our full services list and contact details. Print-ready.</p>
-              <p className="mt-4 text-sm font-semibold text-teal">Download PDF</p>
-            </a>
-          </div>
+      <section id="downloads" className="site-wrap flex flex-wrap items-center justify-between gap-4 py-12">
+        <h2 className="font-display text-2xl">Printable materials</h2>
+        <div className="flex gap-3">
+          <a href="/docs/Divine_Birth_Brochure.pdf" download className="border border-ink px-4 py-2 text-sm font-semibold">Brochure</a>
+          <a href="/docs/Divine_Birth_Pullup_Banner.pdf" download className="border border-ink px-4 py-2 text-sm font-semibold">Banner</a>
         </div>
       </section>
 

@@ -8,10 +8,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-teal text-primary-foreground hover:bg-teal-dark",
-        plum: "bg-plum text-secondary-foreground hover:bg-plum-deep",
-        outline:
-          "border border-border bg-paper text-ink hover:bg-warm",
+        default: "bg-teal text-white hover:bg-teal-dark",
+        plum: "bg-plum text-white hover:bg-plum-deep",
+        outline: "border border-ink bg-paper text-ink hover:bg-cream",
         ghost: "text-ink-mid hover:bg-warm hover:text-ink",
         secondary: "bg-warm text-ink hover:bg-warm-mid",
         destructive: "bg-destructive text-destructive-foreground hover:opacity-90",

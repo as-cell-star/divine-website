@@ -40,9 +40,13 @@ Staff login is at `/admin`. Auth is email + password via the built-in gate.
 
 ## Local / deploy
 
+This is a Vercel Node app, not the old static HTML site.
+
+If you are replacing the previous repo, keep the hidden `.git` folder and copy these files over the old ones. A leftover `index.html` / `css/` from the old site will make Vercel show unstyled text — the build now deletes those automatically.
+
 ```
 npm install
-npm run dev
+npm run build
 ```
 
-The site serves on port 8080. `npm run build` also runs database migrations.
+On Vercel: build command is `npm run build`. Add `DATABASE_URL` (Neon), Cloudinary keys, and `FRONTEND_URL=https://www.divinebirthmidwiferycenter.com`.

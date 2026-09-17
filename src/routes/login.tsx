@@ -72,17 +72,46 @@ function Login() {
           <form onSubmit={onEmail} className="space-y-3">
             {mode === "up" ? (
               <div className="space-y-1.5">
-                <Label className="text-white/70">Name</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Diana" required className="border-white/15 bg-white/8 text-white placeholder:text-white/35" />
+                <Label htmlFor="staff-name" className="text-white/70">
+                  Name
+                </Label>
+                <Input
+                  id="staff-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Diana"
+                  required
+                  className="border-white/15 bg-white/8 text-white placeholder:text-white/35"
+                />
               </div>
             ) : null}
             <div className="space-y-1.5">
-              <Label className="text-white/70">Email</Label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="border-white/15 bg-white/8 text-white placeholder:text-white/35" />
+              <Label htmlFor="staff-email" className="text-white/70">
+                Email
+              </Label>
+              <Input
+                id="staff-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                className="border-white/15 bg-white/8 text-white placeholder:text-white/35"
+              />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-white/70">Password</Label>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete={mode === "up" ? "new-password" : "current-password"} className="border-white/15 bg-white/8 text-white placeholder:text-white/35" />
+              <Label htmlFor="staff-password" className="text-white/70">
+                Password
+              </Label>
+              <Input
+                id="staff-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete={mode === "up" ? "new-password" : "current-password"}
+                className="border-white/15 bg-white/8 text-white placeholder:text-white/35"
+              />
             </div>
             {error ? <p className="text-xs text-red-300">{error}</p> : null}
             <Button type="submit" className="w-full" disabled={pending || !authEnabled}>
