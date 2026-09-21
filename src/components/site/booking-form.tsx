@@ -75,9 +75,9 @@ export function BookingForm() {
     const wa = `https://wa.me/254794444141?text=${encodeURIComponent(`Hello Divine Birth, I booked ${date} at ${time}. ${done.detail}`)}`;
     return (
       <div className="rounded-lg border border-border bg-paper p-8 text-ink">
-        <p className="font-display text-2xl text-plum">We have your request.</p>
+        <p className="font-display text-2xl text-plum">Appointment request received</p>
         <p className="mt-3 text-sm leading-relaxed text-ink-mid">
-          {done.detail} We will confirm {date} at {time}. For labour or anything urgent, call {CLINIC.phonePrimaryDisplay} — we are open now.
+          {done.detail} The midwives will confirm {date} at {time}. If you are in labour or this is urgent, call {CLINIC.phonePrimaryDisplay}.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Button variant="outline" onClick={() => setDone(null)}>
@@ -89,7 +89,7 @@ export function BookingForm() {
             rel="noopener noreferrer"
             className="inline-flex h-11 items-center rounded-md bg-teal px-5 text-sm font-semibold text-white"
           >
-            WhatsApp the midwives
+            WhatsApp the centre
           </a>
         </div>
       </div>
@@ -208,7 +208,7 @@ export function BookingForm() {
           <Textarea id="bnotes" name="notes" placeholder="Estimated due date, special concerns…" />
         </div>
         <Button type="submit" className="mt-6 w-full" disabled={pending}>
-          {pending ? "Sending to the midwives…" : "Confirm appointment"}
+          {pending ? "Sending…" : "Submit appointment request"}
         </Button>
         <p className="mt-3 text-xs text-ink-soft">
           Your booking is emailed to Divine Birth. Urgent? Call{" "}

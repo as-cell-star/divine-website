@@ -1,32 +1,31 @@
-import type { HomepageContent } from "./types";
+import type { FaqItem, HomepageContent, MediaItem, SitePayload, Testimonial } from "./types";
 
 export const DEFAULT_CONTENT: HomepageContent = {
-  heroTag: "Kahawa Wendani · Nairobi · Open 24 / 7",
-  heroTitleLine1: "Natural. Safe.",
-  heroTitleEm: "Personal.",
+  heroTag: "Divine Birth Midwifery Centre",
+  heroTitleLine1: "Maternity care in",
+  heroTitleEm: "Kahawa Wendani",
   heroSub:
-    "Expert midwifery-led care — before, during, and after birth — in a calm, professional environment where every mother is known by name.",
-  introEyebrow: "Our approach",
-  introTitle: "Where every birth story begins with care.",
+    "Antenatal clinic, labour and delivery, postnatal care and child welfare. The centre is open 24 hours a day, including public holidays.",
+  introEyebrow: "The centre",
+  introTitle: "A licensed midwifery facility in Nairobi",
   introBody1:
-    "At Divine Birth Midwifery Centre, we believe childbirth is one of life’s most profound experiences. Our highly trained midwives place you at the centre of everything — listening, guiding, and supporting from your first antenatal visit through to postnatal recovery.",
+    "Divine Birth Midwifery Centre is beside Alvo House, opposite PlayWay Academy in Kahawa Wendani. We look after women from the first antenatal visit through labour, the days after birth, and the child’s immunisation schedule.",
   introBody2:
-    "Whenever there is no medical reason to do otherwise, we champion natural, midwife-led birth. You are not a number here — you are a mother, a family, a person we are honoured to walk alongside.",
-  introPull:
-    "The leading midwifery-led birthing centre in Kenya — providing comprehensive, compassionate, family-centred care.",
-  aboutTitle: "The leading midwifery-led birthing centre in Kenya.",
+    "Straightforward births are managed at the centre. If a woman needs theatre or specialist obstetric care, she is stabilised and referred to a partner hospital. Midwives are on duty on site at all hours — not on call from home.",
+  introPull: "KMHFR licensed · Open 24 hours · Kahawa Wendani, Nairobi",
+  aboutTitle: "About Divine Birth",
   aboutBody1:
-    "Divine Birth Midwifery Centre is a specialised maternal and infant health facility in Kahawa Wendani, Nairobi. Founded on the vision of making expert midwifery care accessible, affordable, and deeply personal.",
+    "The centre was established by midwife Diana to serve families in Kahawa Wendani and nearby estates: skilled maternity care without the cost of a large private hospital, and without the delays of an overcrowded public ward.",
   aboutBody2:
-    "Our mission is to provide comprehensive maternity care in a supportive and compassionate environment — focused on education, wellness and family-centred birthing.",
-  statementLine1: "Less waiting.",
-  statementLine2: "More care.",
+    "We provide antenatal care, antenatal classes, labour and delivery, postnatal clinic, child welfare and immunisation, ultrasound, laboratory services, family planning and doula support. SHA, SHIF and selected private insurance covers are accepted. Telephone 0794 444 141 to confirm what your cover includes before admission.",
+  statementLine1: "In labour?",
+  statementLine2: "Come to the centre. Call on the way.",
 };
 
 export const CLINIC = {
   name: "Divine Birth Midwifery Centre",
   shortName: "Divine Birth",
-  tagline: "Guiding You Through Your Birth Journey",
+  tagline: "Maternity centre, Kahawa Wendani",
   phonePrimary: "+254794444141",
   phonePrimaryDisplay: "+254 794 444141",
   phoneSecondary: "+254794444121",
@@ -38,7 +37,7 @@ export const CLINIC = {
   emailSecondary: "divinebirthmidwiferycenter@gmail.com",
   addressLine1: "Besides Alvo House, opposite PlayWay Academy",
   addressLine2: "Kahawa Wendani, Nairobi, Kenya",
-  hours: "Open 24 hours, 7 days a week — including public holidays",
+  hours: "Open 24 hours, including public holidays",
   mapsEmbed:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7194870!2d36.9281535!3d-1.1998878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f3f001b66566d%3A0x94f239b341ae6498!2sDivine%20Birth%20Midwifery%20Centre!5e0!3m2!1sen!2ske!4v1700000000000!5m2!1sen!2ske",
   rating: "5.0",
@@ -60,3 +59,113 @@ export const TIME_SLOTS = [
   "Evening",
   "Night / in labour",
 ];
+
+function media(
+  id: string,
+  kind: MediaItem["kind"],
+  url: string,
+  alt: string,
+  title: string,
+  sortOrder: number,
+): MediaItem {
+  return { id, kind, url, alt, title, caption: "", category: "", sortOrder, createdAt: "" };
+}
+
+export const DEFAULT_HERO: MediaItem[] = [
+  media("seed-hero-1", "hero", "/images/photo-midwife-newborn.jpg", "A Divine Birth midwife holding a newborn", "Hero", 1),
+  media("seed-hero-2", "hero", "/images/hero4.jpg", "Midwife holding a newborn", "Hero 2", 2),
+  media("seed-hero-3", "hero", "/images/hero2.jpg", "Care at Divine Birth", "Hero 3", 3),
+];
+
+export const DEFAULT_GALLERY: MediaItem[] = [
+  media("seed-gallery-1", "gallery", "/images/photo-midwife-newborn.jpg", "A Divine Birth midwife holding a newborn", "Newborn care", 1),
+  media("seed-gallery-2", "gallery", "/images/photo-mother-baby.jpg", "A new mother and her midwife with her newborn", "Mother and baby", 2),
+  media("seed-gallery-3", "gallery", "/images/photo-handover.jpg", "A midwife placing a newborn into her mother's arms", "First hold", 3),
+  media("seed-gallery-4", "gallery", "/images/photo-twins.jpg", "Two midwives each holding a newborn twin", "Twins", 4),
+  media("seed-gallery-5", "gallery", "/images/photo-swaddled.jpg", "A midwife holding a swaddled newborn", "Swaddled", 5),
+];
+
+export const DEFAULT_TESTIMONIALS: Testimonial[] = [
+  {
+    id: "seed-rev-1",
+    quote: "Best hospital for normal delivery with high quality services at a very affordable price. I couldn't have asked for a better experience.",
+    author: "Google review",
+    rating: 5,
+    sortOrder: 1,
+    published: true,
+  },
+  {
+    id: "seed-rev-2",
+    quote: "I had a wonderful experience — the midwives were kind, professional and made me feel completely supported throughout the entire process.",
+    author: "Google review",
+    rating: 5,
+    sortOrder: 2,
+    published: true,
+  },
+  {
+    id: "seed-rev-3",
+    quote: "The team, led by Diana, is truly exceptional. Full attention is given to every client. I highly recommend Divine Birth to every expectant family.",
+    author: "Google review",
+    rating: 5,
+    sortOrder: 3,
+    published: true,
+  },
+];
+
+export const DEFAULT_FAQS: FaqItem[] = [
+  {
+    id: "seed-faq-1",
+    question: "Do I need an appointment to visit?",
+    answer:
+      "Clinic visits (antenatal, postnatal, scans, child welfare) are best booked so that you are seen with less waiting. If you are in labour, come directly to the centre or call 0794 444 141 on the way. The centre does not close at night.",
+    sortOrder: 1,
+    published: true,
+  },
+  {
+    id: "seed-faq-2",
+    question: "What should I bring for delivery?",
+    answer:
+      "Bring your national ID, antenatal booklet, SHA or insurance details, clothes for yourself and the baby, sanitary pads and toiletries. If something is forgotten, the staff will help. Arriving safely is more important than a complete bag.",
+    sortOrder: 2,
+    published: true,
+  },
+  {
+    id: "seed-faq-3",
+    question: "May my husband or a relative stay during labour?",
+    answer: "Yes. One birth companion may stay with you. Tell the midwife on admission.",
+    sortOrder: 3,
+    published: true,
+  },
+  {
+    id: "seed-faq-4",
+    question: "Do you accept SHA, SHIF or private insurance?",
+    answer:
+      "SHA, SHIF and selected private covers are accepted. Telephone 0794 444 141 before admission so we can confirm what your policy pays and what you will settle yourself.",
+    sortOrder: 4,
+    published: true,
+  },
+  {
+    id: "seed-faq-5",
+    question: "What happens if I need a caesarean section?",
+    answer:
+      "Emergency caesarean section is not performed at this centre. If labour requires theatre or specialist obstetric care, the woman is stabilised and referred to a partner hospital. A midwife remains with her so that this decision is made early.",
+    sortOrder: 5,
+    published: true,
+  },
+  {
+    id: "seed-faq-6",
+    question: "How long will I stay after the birth?",
+    answer:
+      "After an uncomplicated delivery, most mothers are discharged within 24 to 48 hours, once feeding is established and both mother and baby have been examined. A postnatal clinic visit is then booked.",
+    sortOrder: 6,
+    published: true,
+  },
+];
+
+export const DEFAULT_SITE: SitePayload = {
+  content: DEFAULT_CONTENT,
+  hero: DEFAULT_HERO,
+  gallery: DEFAULT_GALLERY,
+  testimonials: DEFAULT_TESTIMONIALS,
+  faqs: DEFAULT_FAQS,
+};

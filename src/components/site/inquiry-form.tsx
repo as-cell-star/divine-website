@@ -39,9 +39,9 @@ export function InquiryForm() {
   if (done) {
     return (
       <div className="rounded-lg border border-border bg-paper p-7">
-        <p className="font-display text-2xl text-plum">Message received.</p>
+        <p className="font-display text-2xl text-plum">Message sent</p>
         <p className="mt-3 text-sm text-ink-mid">
-          {done} If this is urgent, call {CLINIC.phonePrimaryDisplay}.
+          {done} For labour or an emergency, call {CLINIC.phonePrimaryDisplay}.
         </p>
       </div>
     );
@@ -49,7 +49,7 @@ export function InquiryForm() {
 
   return (
     <form onSubmit={onSubmit} className="rounded-lg border border-border bg-paper p-5 sm:p-7">
-      <p className="font-display text-xl text-plum">Send an inquiry</p>
+      <p className="font-display text-xl text-plum">Write to the centre</p>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">

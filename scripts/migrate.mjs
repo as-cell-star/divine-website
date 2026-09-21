@@ -20,9 +20,16 @@ import { pendingMigrations } from "./migration-plan.mjs";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  console.log(
-    "[migrate] DATABASE_URL not set — skipping (the PGLite fallback migrates itself).",
-  );
+  if (process.env.VERCEL) {
+    console.warn(
+      "[migrate] DATABASE_URL is not set. The public site will still deploy.\n" +
+        "Add Neon Postgres as DATABASE_URL in Vercel (Storage → Neon, pooled string), then Redeploy so bookings and /admin persist.",
+    );
+  } else {
+    console.log(
+      "[migrate] DATABASE_URL not set — skipping (the PGLite fallback migrates itself).",
+    );
+  }
   process.exit(0);
 }
 
@@ -42,7 +49,11 @@ async function main() {
     return;
   }
 
-  const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
+  const pool = new pg.Pool({
+    connectionString: databaseUrl,
+    max: 1,
+    ssl: String(databaseUrl).includes("localhost") ? undefined : { rejectUnauthorized: false },
+  });
   const client = await pool.connect();
   try {
     await client.query(

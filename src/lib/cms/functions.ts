@@ -3,7 +3,7 @@ import { z } from "zod";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { getSql } from "@/lib/db";
 import { uid } from "@/lib/utils";
-import { DEFAULT_CONTENT } from "./defaults";
+import { DEFAULT_CONTENT, DEFAULT_SITE } from "./defaults";
 import { dispatchClinicPipeline } from "@/lib/notify/pipeline";
 import type {
   AdminStats,
@@ -51,6 +51,8 @@ async function loadContent(): Promise<HomepageContent> {
   const sql = await getSql();
   const rows = await sql<{ value: string }>`select value from site_content where key = ${"homepage"}`;
   if (!rows[0]?.value) return DEFAULT_CONTENT;
+  const stale = /Natural\. Safe\.|birth story begins|leading midwifery-led|honoured to walk|Less waiting/i;
+  if (stale.test(rows[0].value)) return DEFAULT_CONTENT;
   try {
     return { ...DEFAULT_CONTENT, ...(JSON.parse(rows[0].value) as Partial<HomepageContent>) };
   } catch {
@@ -60,58 +62,67 @@ async function loadContent(): Promise<HomepageContent> {
 
 export const getSitePayload = createServerFn({ method: "GET" }).handler(
   async (): Promise<SitePayload> => {
-    const sql = await getSql();
-    const [content, media, testimonials, faqs] = await Promise.all([
-      loadContent(),
-      sql<{
-        id: string;
-        kind: string;
-        url: string;
-        alt: string;
-        title: string;
-        caption: string;
-        category: string;
-        sort_order: number;
-        created_at: string;
-      }>`select id, kind, url, alt, title, caption, category, sort_order, created_at::text as created_at from media order by sort_order asc, created_at desc`,
-      sql<{
-        id: string;
-        quote: string;
-        author: string;
-        rating: number;
-        sort_order: number;
-        published: boolean;
-      }>`select id, quote, author, rating, sort_order, published from testimonials where published = true order by sort_order asc`,
-      sql<{
-        id: string;
-        question: string;
-        answer: string;
-        sort_order: number;
-        published: boolean;
-      }>`select id, question, answer, sort_order, published from faqs where published = true order by sort_order asc`,
-    ]);
+    try {
+      const sql = await getSql();
+      const [content, media, testimonials, faqs] = await Promise.all([
+        loadContent(),
+        sql<{
+          id: string;
+          kind: string;
+          url: string;
+          alt: string;
+          title: string;
+          caption: string;
+          category: string;
+          sort_order: number;
+          created_at: string;
+        }>`select id, kind, url, alt, title, caption, category, sort_order, created_at::text as created_at from media order by sort_order asc, created_at desc`,
+        sql<{
+          id: string;
+          quote: string;
+          author: string;
+          rating: number;
+          sort_order: number;
+          published: boolean;
+        }>`select id, quote, author, rating, sort_order, published from testimonials where published = true order by sort_order asc`,
+        sql<{
+          id: string;
+          question: string;
+          answer: string;
+          sort_order: number;
+          published: boolean;
+        }>`select id, question, answer, sort_order, published from faqs where published = true order by sort_order asc`,
+      ]);
 
-    const items = media.map(mapMedia);
-    return {
-      content,
-      hero: items.filter((m) => m.kind === "hero"),
-      gallery: items.filter((m) => m.kind === "gallery"),
-      testimonials: testimonials.map((t) => ({
-        id: t.id,
-        quote: t.quote,
-        author: t.author,
-        rating: Number(t.rating) || 5,
-        sortOrder: Number(t.sort_order) || 0,
-        published: asBool(t.published),
-      })),
-      faqs: faqs.map((f) => ({
-        id: f.id,
-        question: f.question,
-        answer: f.answer,
-        sortOrder: Number(f.sort_order) || 0,
-        published: asBool(f.published),
-      })),
-    };
+      const items = media.map(mapMedia);
+      return {
+        content,
+        hero: items.filter((m) => m.kind === "hero").length ? items.filter((m) => m.kind === "hero") : DEFAULT_SITE.hero,
+        gallery: items.filter((m) => m.kind === "gallery").length ? items.filter((m) => m.kind === "gallery") : DEFAULT_SITE.gallery,
+        testimonials: testimonials.length
+          ? testimonials.map((t) => ({
+              id: t.id,
+              quote: t.quote,
+              author: t.author,
+              rating: Number(t.rating) || 5,
+              sortOrder: Number(t.sort_order) || 0,
+              published: asBool(t.published),
+            }))
+          : DEFAULT_SITE.testimonials,
+        faqs: faqs.length
+          ? faqs.map((f) => ({
+              id: f.id,
+              question: f.question,
+              answer: f.answer,
+              sortOrder: Number(f.sort_order) || 0,
+              published: asBool(f.published),
+            }))
+          : DEFAULT_SITE.faqs,
+      };
+    } catch (err) {
+      console.error("[cms] getSitePayload falling back to defaults:", err);
+      return DEFAULT_SITE;
+    }
   },
 );
 
@@ -132,23 +143,46 @@ export const submitAppointment = createServerFn({ method: "POST" })
     if (data.website) {
       return { ok: true as const, id: "ok", emailStatus: "queued" as const, detail: "Received." };
     }
-    const sql = await getSql();
     const id = uid();
-    await sql`insert into appointments (id, first_name, last_name, phone, service, date, time, notes, status)
-      values (${id}, ${data.firstName}, ${data.lastName}, ${data.phone}, ${data.service}, ${data.date}, ${data.time}, ${data.notes ?? ""}, ${"pending"})`;
-    const pipeline = await dispatchClinicPipeline({
-      kind: "appointment",
-      id,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: data.phone,
-      service: data.service,
-      date: data.date,
-      time: data.time,
-      notes: data.notes,
-    });
-    await sql`update appointments set cloudinary_url = ${pipeline.cloudinaryUrl}, email_status = ${pipeline.emailStatus} where id = ${id}`;
-    return { ok: true as const, id, emailStatus: pipeline.emailStatus, detail: pipeline.detail };
+    let saved = false;
+    try {
+      const sql = await getSql();
+      await sql`insert into appointments (id, first_name, last_name, phone, service, date, time, notes, status)
+        values (${id}, ${data.firstName}, ${data.lastName}, ${data.phone}, ${data.service}, ${data.date}, ${data.time}, ${data.notes ?? ""}, ${"pending"})`;
+      saved = true;
+      const pipeline = await dispatchClinicPipeline({
+        kind: "appointment",
+        id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone,
+        service: data.service,
+        date: data.date,
+        time: data.time,
+        notes: data.notes,
+      });
+      await sql`update appointments set cloudinary_url = ${pipeline.cloudinaryUrl}, email_status = ${pipeline.emailStatus} where id = ${id}`;
+      return { ok: true as const, id, emailStatus: pipeline.emailStatus, detail: pipeline.detail };
+    } catch (err) {
+      console.error("[cms] appointment persist failed, still notifying clinic:", err);
+      const pipeline = await dispatchClinicPipeline({
+        kind: "appointment",
+        id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone,
+        service: data.service,
+        date: data.date,
+        time: data.time,
+        notes: data.notes,
+      });
+      return {
+        ok: true as const,
+        id,
+        emailStatus: pipeline.emailStatus,
+        detail: saved ? pipeline.detail : pipeline.detail || "Sent to the midwives.",
+      };
+    }
   });
 
 const inquiryInput = z.object({
@@ -166,21 +200,28 @@ export const submitInquiry = createServerFn({ method: "POST" })
     if (data.website) {
       return { ok: true as const, id: "ok", emailStatus: "queued" as const, detail: "Received." };
     }
-    const sql = await getSql();
     const id = uid();
-    await sql`insert into inquiries (id, first_name, last_name, phone, service, message, status)
-      values (${id}, ${data.firstName}, ${data.lastName}, ${data.phone}, ${data.service ?? ""}, ${data.message ?? ""}, ${"new"})`;
-    const pipeline = await dispatchClinicPipeline({
-      kind: "inquiry",
+    const payload = {
+      kind: "inquiry" as const,
       id,
       firstName: data.firstName,
       lastName: data.lastName,
       phone: data.phone,
       service: data.service || "General",
       message: data.message,
-    });
-    await sql`update inquiries set cloudinary_url = ${pipeline.cloudinaryUrl}, email_status = ${pipeline.emailStatus} where id = ${id}`;
-    return { ok: true as const, id, emailStatus: pipeline.emailStatus, detail: pipeline.detail };
+    };
+    try {
+      const sql = await getSql();
+      await sql`insert into inquiries (id, first_name, last_name, phone, service, message, status)
+        values (${id}, ${data.firstName}, ${data.lastName}, ${data.phone}, ${data.service ?? ""}, ${data.message ?? ""}, ${"new"})`;
+      const pipeline = await dispatchClinicPipeline(payload);
+      await sql`update inquiries set cloudinary_url = ${pipeline.cloudinaryUrl}, email_status = ${pipeline.emailStatus} where id = ${id}`;
+      return { ok: true as const, id, emailStatus: pipeline.emailStatus, detail: pipeline.detail };
+    } catch (err) {
+      console.error("[cms] inquiry persist failed, still notifying clinic:", err);
+      const pipeline = await dispatchClinicPipeline(payload);
+      return { ok: true as const, id, emailStatus: pipeline.emailStatus, detail: pipeline.detail };
+    }
   });
 
 export const getAdminStats = createServerFn({ method: "GET" })
